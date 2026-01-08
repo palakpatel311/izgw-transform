@@ -1,0 +1,41 @@
+# Standard Release Workflow
+# Run this workflow from the 'develop' branch to create a standard release.
+# For hotfix releases, use the hotfix.yml workflow instead.
+
+name: Release - Standard
+
+on:
+  workflow_dispatch:
+    inputs:
+      release-version:
+        description: 'Release version (e.g., 2.4.0)'
+        required: true
+        type: string
+      next-snapshot-version:
+        description: 'Next SNAPSHOT version (e.g., 2.5.0 or 3.0.0) - leave blank to auto-increment minor version'
+        required: false
+        type: string
+      skip-tests:
+        description: 'Skip tests (use only for emergency releases)'
+        required: false
+        type: boolean
+        default: false
+      delete-release-branch-on-failure:
+        description: 'Delete release branch if workflow fails'
+        required: false
+        type: boolean
+        default: true
+
+jobs:
+  release:
+    uses: ./.github/workflows/_release-core.yml
+    with:
+      release-version: ${{ inputs.release-version }}
+      next-snapshot-version: ${{ inputs.next-snapshot-version }}
+      skip-tests: ${{ inputs.skip-tests }}
+      delete-release-branch-on-failure: ${{ inputs.delete-release-branch-on-failure }}
+      release-type: standard
+    secrets:
+      ACTIONS_KEY: ${{ secrets.ACTIONS_KEY }}
+      COMMON_PASS: ${{ secrets.COMMON_PASS }}
+      ELASTIC_API_KEY: ${{ secrets.ELASTIC_API_KEY }}

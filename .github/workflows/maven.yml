@@ -4,14 +4,14 @@ on:
   pull_request:
     branches:
       - develop
-      - Release*
-      - main
+      # - Release*
+      # - main
 
   push:
     branches:
       - develop
-      - Release*
-      - main
+      # - Release*
+      # - main
 
   # Schedule runs on the default branch.
   schedule:

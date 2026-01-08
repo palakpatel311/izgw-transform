@@ -48,7 +48,7 @@
         <repository>
             <id>github-bom</id>
             <name>GitHub Packages</name>
-            <url>https://maven.pkg.github.com/IZGateway/izgw-bom</url>
+            <url>https://maven.pkg.github.com/palakpatel311/izgw-bom</url>
             <releases>
                 <enabled>true</enabled>
             </releases>
@@ -59,7 +59,7 @@
         <repository>
             <id>github-core</id>
             <name>izgw-core</name>
-            <url>https://maven.pkg.github.com/izgateway/izgw-core</url>
+            <url>https://maven.pkg.github.com/palakpatel311/izgw-core</url>
             <releases>
                 <enabled>true</enabled>
             </releases>
@@ -69,7 +69,7 @@
         </repository>
         <repository>
             <id>v2tofhir</id>
-            <url>https://maven.pkg.github.com/IZGateway/v2tofhir</url>
+            <url>https://maven.pkg.github.com/palakpatel311/v2tofhir</url>
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
