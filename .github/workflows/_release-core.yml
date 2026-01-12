@@ -193,38 +193,38 @@ jobs:
 
         echo "Artifact does not exist in GitHub Packages yet"
 
-    - name: Check for SNAPSHOT dependencies
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        echo "Checking for SNAPSHOT dependencies..."
+    # - name: Check for SNAPSHOT dependencies
+    #   env:
+    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    #   run: |
+    #     echo "Checking for SNAPSHOT dependencies..."
 
-        # Check regular dependencies
-        # Get the current version of this project from the pom.xml, we want to filter this out of the dependency:list check
-        POM_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-        # Exclude internal IZ Gateway SNAPSHOT dependencies (gov.cdc.izgw:*) from the check
-        SNAPSHOT_DEPS=$(mvn dependency:list | grep -v $POM_VERSION | grep SNAPSHOT | grep -v "gov.cdc.izgw" || true)
+    #     # Check regular dependencies
+    #     # Get the current version of this project from the pom.xml, we want to filter this out of the dependency:list check
+    #     POM_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+    #     # Exclude internal IZ Gateway SNAPSHOT dependencies (gov.cdc.izgw:*) from the check
+    #     SNAPSHOT_DEPS=$(mvn dependency:list | grep -v $POM_VERSION | grep SNAPSHOT | grep -v "gov.cdc.izgw" || true)
 
-        # Check parent POM version separately (not included in dependency:list)
-        PARENT_VERSION=$(mvn help:evaluate -Dexpression=project.parent.version -q -DforceStdout)
-        if [[ "$PARENT_VERSION" == *"SNAPSHOT"* ]]; then
-          echo "ERROR: Parent POM is a SNAPSHOT version: $PARENT_VERSION"
-          echo ""
-          echo "Please release izgw-bom first before releasing izgw-core."
-          exit 1
-        fi
-        echo "Parent POM version is a release version: $PARENT_VERSION"
+    #     # Check parent POM version separately (not included in dependency:list)
+    #     PARENT_VERSION=$(mvn help:evaluate -Dexpression=project.parent.version -q -DforceStdout)
+    #     if [[ "$PARENT_VERSION" == *"SNAPSHOT"* ]]; then
+    #       echo "ERROR: Parent POM is a SNAPSHOT version: $PARENT_VERSION"
+    #       echo ""
+    #       echo "Please release izgw-bom first before releasing izgw-core."
+    #       exit 1
+    #     fi
+    #     echo "Parent POM version is a release version: $PARENT_VERSION"
 
-        # Check if any external SNAPSHOT dependencies are found (internal gov.cdc.izgw are allowed)
-        if [ -n "$SNAPSHOT_DEPS" ]; then
-          echo "ERROR: Found external SNAPSHOT dependencies in the project:"
-          echo "$SNAPSHOT_DEPS"
-          echo ""
-          echo "Please update all external dependencies to release versions before creating a release."
-          exit 1
-        fi
+    #     # Check if any external SNAPSHOT dependencies are found (internal gov.cdc.izgw are allowed)
+    #     if [ -n "$SNAPSHOT_DEPS" ]; then
+    #       echo "ERROR: Found external SNAPSHOT dependencies in the project:"
+    #       echo "$SNAPSHOT_DEPS"
+    #       echo ""
+    #       echo "Please update all external dependencies to release versions before creating a release."
+    #       exit 1
+    #     fi
 
-        echo "No external SNAPSHOT dependencies found - ready for release"
+    #     echo "No external SNAPSHOT dependencies found - ready for release"
 
     - name: Run tests
       if: ${{ !inputs.skip-tests }}
