@@ -202,7 +202,8 @@ jobs:
         # Check regular dependencies
         # Get the current version of this project from the pom.xml, we want to filter this out of the dependency:list check
         POM_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-        SNAPSHOT_DEPS=$(mvn dependency:list | grep -v $POM_VERSION | grep SNAPSHOT || true)
+        # Exclude internal IZ Gateway SNAPSHOT dependencies (gov.cdc.izgw:*) from the check
+        SNAPSHOT_DEPS=$(mvn dependency:list | grep -v $POM_VERSION | grep SNAPSHOT | grep -v "gov.cdc.izgw" || true)
 
         # Check parent POM version separately (not included in dependency:list)
         PARENT_VERSION=$(mvn help:evaluate -Dexpression=project.parent.version -q -DforceStdout)
@@ -214,16 +215,16 @@ jobs:
         fi
         echo "Parent POM version is a release version: $PARENT_VERSION"
 
-        # Check if any regular dependencies are SNAPSHOT
+        # Check if any external SNAPSHOT dependencies are found (internal gov.cdc.izgw are allowed)
         if [ -n "$SNAPSHOT_DEPS" ]; then
-          echo "ERROR: Found SNAPSHOT dependencies in the project:"
+          echo "ERROR: Found external SNAPSHOT dependencies in the project:"
           echo "$SNAPSHOT_DEPS"
           echo ""
-          echo "Please update all dependencies to release versions before creating a release."
+          echo "Please update all external dependencies to release versions before creating a release."
           exit 1
         fi
 
-        echo "No SNAPSHOT dependencies found - ready for release"
+        echo "No external SNAPSHOT dependencies found - ready for release"
 
     - name: Run tests
       if: ${{ !inputs.skip-tests }}
